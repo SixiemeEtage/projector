@@ -6,8 +6,9 @@ PROJECTION_CUBEMAP = 'cubemap'
 
 class BaseProj(object):
     
-    def __init__(self, image_width):
+    def __init__(self, image_width, options):
         self.image_width = image_width
+        self.options = options
 
     def get_projection(self):
         raise NotImplementedError
@@ -25,7 +26,7 @@ class CubemapProj(BaseProj):
     
     def get_projection(self):
         side_width = int(self.image_width / 4)
-        border_padding = 0
+        border_padding = self.options.get('border_padding', 0)
         return libprojector.CubemapProjection(side_width, border_padding)
 
 

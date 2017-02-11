@@ -209,8 +209,8 @@ namespace libprojector {
             v = 0.5 * (v / maxAxis + 1.0);
 
             // convert the (u,v) to the layout described in the class comment (cross layout)
-            point.u = offsetXIndex * sideWidth + u * sideWidth;
-            point.v = offsetYIndex * sideWidth + v * sideWidth;
+            point.u = offsetXIndex * sideWidth + sideBorderPadding + u * (sideWidth - 2*sideBorderPadding);
+            point.v = offsetYIndex * sideWidth + sideBorderPadding + v * (sideWidth - 2*sideBorderPadding);
         }
     };
 
