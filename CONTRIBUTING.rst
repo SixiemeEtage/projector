@@ -92,6 +92,25 @@ Ready to contribute? Here's how to set up `projector` for local development.
 
 7. Submit a pull request through the GitHub website.
 
+Testing
+-------
+
+Convert cubicmap -> equirectangular
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    $ make install && \
+    cp /usr/local/lib/python2.7/site-packages/libprojector.so /usr/local/data/virtualenvs/projector/lib/python2.7/site-packages && \
+    projector --in-projection cubemap --cubemap-border-padding 5 --out-projection equirectangular --output-width 4096 ./examples/cubemap_high_res/cubemap_+x.jpg ./examples/cubemap_high_res/cubemap_-x.jpg ./examples/cubemap_high_res/cubemap_+y.jpg ./examples/cubemap_high_res/cubemap_-y.jpg ./examples/cubemap_high_res/cubemap_+z.jpg ./examples/cubemap_high_res/cubemap_-z.jpg
+
+
+Convert equirectangular -> cubicmap
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    $ make install && \
+    cp /usr/local/lib/python2.7/site-packages/libprojector.so /usr/local/data/virtualenvs/projector/lib/python2.7/site-packages && \
+    projector --in-projection equirectangular --cubemap-border-padding 0 --out-projection cubemap --output-width 4096 ./examples/equirectangular_high_res/output.jpg
+
+
 Pull Request Guidelines
 -----------------------
 
