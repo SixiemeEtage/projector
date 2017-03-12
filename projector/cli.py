@@ -4,7 +4,7 @@ import click
 import cv2
 from PIL import Image
 
-from .processors import generate_cubemap, ConvertProjectionProcessor
+from .processors import generate_cubemap, split_cubemap, ConvertProjectionProcessor
 from .projections import PROJECTION_CLASSES, PROJECTION_CUBEMAP, PROJECTION_EQUIRECTANGULAR
 
 
@@ -45,7 +45,6 @@ def main(in_projection, out_projection, output, output_width, cubemap_border_pad
         input_image_path = 'cubemap.jpg'
         input_image = merged_image
     elif in_projection == PROJECTION_EQUIRECTANGULAR:
-        in_proj_options['border_padding'] = cubemap_border_padding
 
         # validate input images
         if len(in_images) != 1:
@@ -56,6 +55,13 @@ def main(in_projection, out_projection, output, output_width, cubemap_border_pad
         input_image = Image.open(input_image_path)
     else:
         raise ValueError("input projection '{}' not fully implemented yet".format(in_projection))
+
+    if out_projection == PROJECTION_CUBEMAP:
+        out_proj_options['border_padding'] = cubemap_border_padding
+    elif out_projection == PROJECTION_EQUIRECTANGULAR:
+        pass
+    else:
+        raise ValueError("output projection '{}' not fully implemented yet".format(out_projection))
 
     click.echo(click.style("Input proj options: {}".format(in_proj_options), fg='blue'))
     click.echo(click.style("Output proj options: {}".format(out_proj_options), fg='blue'))
@@ -75,9 +81,18 @@ def main(in_projection, out_projection, output, output_width, cubemap_border_pad
     out = processor.run(in_proj, out_proj)
     click.echo("    done")
         
-    cv2.imwrite(output, out)
-    click.echo(click.style("Done! Conversion saved at '{}'".format(output), fg='green'))
-
+    if out_projection == PROJECTION_EQUIRECTANGULAR:
+        cv2.imwrite(output, out)
+        click.echo(click.style("Done! Conversion saved at '{}'".format(output), fg='green'))
+    elif out_projection == PROJECTION_CUBEMAP:
+        cube_images = split_cubemap(out)
+        output_name, output_ext = output.rsplit('.', 1)
+        for (face_suffix, img) in cube_images.items():
+            output_face_filename = "{}{}.{}".format(output_name, face_suffix, output_ext)
+            cv2.imwrite(output_face_filename, img)
+            click.echo(click.style("Face saved at '{}'".format(output_face_filename), fg='green'))
+    else:
+        raise ValueError("output projection '{}' not fully implemented yet".format(out_projection))
 
 if __name__ == "__main__":
     main()

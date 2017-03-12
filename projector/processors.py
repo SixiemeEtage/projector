@@ -42,6 +42,49 @@ def generate_cubemap(images):
     return merged_image
 
 
+def split_cubemap(map_image):
+    """
+     Cubemap splitting associated with the following cubemap layout
+
+      --------
+     |   +z   |
+     |  side  |
+      -------- -------- -------- --------
+     |   -y   |   +x   |   +y   |   -x   |
+     |  side  |  side  |  side  |  side  |
+      -------- -------- -------- --------
+     |   -z   |
+     |  side  |
+      --------
+
+    """
+    assert isinstance(map_image, np.ndarray)
+    splitted_images = {}
+    assert map_image.shape[1] % 4 == 0
+    side_x_size = int(map_image.shape[1] / 4)
+    assert map_image.shape[0] % 3 == 0
+    side_y_size = int(map_image.shape[0] / 3)
+    if side_x_size != side_y_size:
+        raise ValueError("The cubemap doesn't seem to be valid, the face sizes are not equal.")
+
+    faces_offsets = {
+        "+z": (0, 0),
+        "-y": (0, 1),
+        "+x": (1, 1),
+        "+y": (2, 1),
+        "-x": (3, 1),
+        "-z": (0, 2),
+    }
+    for face in faces_offsets:
+        offset_indexes = faces_offsets[face]
+        top_x, top_y = (side_x_size * offset_indexes[0], side_y_size * offset_indexes[1])
+        bottom_x, bottom_y = top_x + side_x_size, top_y + side_y_size
+        img = map_image[top_y:bottom_y, top_x:bottom_x]
+        splitted_images[face] = img
+
+    return splitted_images
+
+
 class ConvertProjectionProcessor(object):
 
     def __init__(self, input_image_path):
