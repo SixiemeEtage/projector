@@ -6,6 +6,21 @@ import libprojector
 
 
 def generate_cubemap(images):
+    """
+     Compose a cubemap associated with the following cubemap layout
+
+      --------
+     |   +z   |
+     |  side  |
+      -------- -------- -------- --------
+     |   -y   |   +x   |   +y   |   -x   |
+     |  side  |  side  |  side  |  side  |
+      -------- -------- -------- --------
+     |   -z   |
+     |  side  |
+      --------
+
+    """
     merged_image = None
     side_size = 0
     x_offset, y_offset = (0, 0)
