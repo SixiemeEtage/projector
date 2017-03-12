@@ -18,16 +18,16 @@ def generate_cubemap(images):
 
         if idx == 0:
             # front side (+x)
-            x_offset, y_offset = (side_size, side_size)
+            x_offset, y_offset = (1*side_size, 1*side_size)
         elif idx == 1:
             # back side (-x)
-            x_offset, y_offset = (3*side_size, side_size)
+            x_offset, y_offset = (3*side_size, 1*side_size)
         elif idx == 2:
             # left side (+y)
-            x_offset, y_offset = (0, side_size)
+            x_offset, y_offset = (2*side_size, 1*side_size)
         elif idx == 3:
             # right side (-y)
-            x_offset, y_offset = (2*side_size, side_size)
+            x_offset, y_offset = (0*side_size, 1*side_size)
         elif idx == 4:
             # top side (+z)
             x_offset, y_offset = (0, 0)
