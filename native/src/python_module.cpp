@@ -76,15 +76,14 @@ namespace libprojector {
         }
 
         void toTexCoords(Ray r, TexCoords& point) const {
-            double u = scale * atan2f(r.x, r.z);
-            double v = 0.0;
-            double d = sqrtf(r.x * r.x + r.y * r.y + r.z * r.z);
-            if (fabs(d) < DBL_EPSILON) {
-                v = 0.0;
-            } else {
-                double w = r.y / d;
-                v = scale * (M_PI - acosf(w));
-            }
+            // NB: we take the asumption the the ray is on the unit sphere
+            double u = scale * atan2f(r.y, r.x);
+            double v = scale * (M_PI_2 - acosf(r.z));
+
+            v *= -1.0;
+
+            u += imageMidWidth;
+            v += imageMidHeight;
 
             point.u = u;
             point.v = v;
@@ -125,7 +124,73 @@ namespace libprojector {
         }
 
         void toRay(double u, double v, Ray& ray) const {
-            
+            int offsetXIndex = floor(u / sideWidth);
+            int offsetYIndex = floor(v / sideWidth);
+
+            // local (side) coords [-1,1]
+            double uu = 2.0 * ((u - (offsetXIndex * sideWidth)) / sideWidth) - 1.0;
+            double vv = 2.0 * ((v - (offsetYIndex * sideWidth)) / sideWidth) - 1.0;
+
+            ray.x = 0;
+            ray.y = 0;
+            ray.z = 0;
+
+            double maxAxis = sqrtf(1.0 / (1.0 + uu*uu + vv*vv));
+
+            // -y
+            if (offsetXIndex == 0 && offsetYIndex == 1) {
+                // uu [-1,1] from -x to +x
+                // vv [-1,1] from +z to -z
+                ray.x = uu * maxAxis;
+                ray.z = -vv * maxAxis;
+                ray.y = -1.0 * maxAxis;
+            }
+            // +x
+            if (offsetXIndex == 1 && offsetYIndex == 1) {
+                // uu [-1,1] from -y to +y
+                // vv [-1,1] from +z to -z
+                ray.y = uu * maxAxis;
+                ray.z = -vv * maxAxis;
+                ray.x = maxAxis;
+            }
+            // +y
+            if (offsetXIndex == 2 && offsetYIndex == 1) {
+                // uu [-1,1] from +x to -x
+                // vv [-1,1] from +z to -z
+                ray.x = -uu * maxAxis;
+                ray.z = -vv * maxAxis;
+                ray.y = maxAxis;
+            }
+            // -x
+            if (offsetXIndex == 3 && offsetYIndex == 1) {
+                // uu [-1,1] from +y to -y
+                // vv [-1,1] from +z to -z
+                ray.y = -uu * maxAxis;
+                ray.z = -vv * maxAxis;
+                ray.x = -1.0 * maxAxis;
+            }
+            // +z
+            if (offsetXIndex == 0 && offsetYIndex == 0) {
+                // u in [-1,1] from -x to +x
+                // v in [-1,1] from +y to -y
+                ray.x = uu * maxAxis;
+                ray.y = -vv * maxAxis;
+                ray.z = maxAxis;
+            }
+            // -z
+            if (offsetXIndex == 0 && offsetYIndex == 2) {
+                // u in [-1,1] from -x to +x
+                // v in [-1,1] from -y to +y
+                ray.x = uu * maxAxis;
+                ray.y = vv * maxAxis;
+                ray.z = -1.0 * maxAxis;
+            }
+
+            // Security check
+            // if (isnan(ray.x) || isnan(ray.y) || isnan(ray.z)) {
+            //     std::cerr << "tex(u,v) = " << uu << "," << vv << std::endl;
+            //     std::cerr << "ray(x,y,z) = " << ray.x << "," << ray.y << "," << ray.z << std::endl;
+            // }
         }
 
         void toTexCoords(Ray r, TexCoords& point) const {
@@ -153,7 +218,7 @@ namespace libprojector {
             }
             // -x
             if (!isXPositive && absX >= absY && absX >= absZ) {
-                // u in [0,1] from +y to +y
+                // u in [0,1] from +y to -y
                 // v in [0,1] from -z to +z
                 maxAxis = absX;
                 offsetXIndex = 3;

@@ -5,7 +5,7 @@ import cv2
 from PIL import Image
 
 from .processors import generate_cubemap, ConvertProjectionProcessor
-from .projections import PROJECTION_CLASSES, PROJECTION_CUBEMAP
+from .projections import PROJECTION_CLASSES, PROJECTION_CUBEMAP, PROJECTION_EQUIRECTANGULAR
 
 
 @click.command()
@@ -44,6 +44,16 @@ def main(in_projection, out_projection, output, output_width, cubemap_border_pad
 
         input_image_path = 'cubemap.jpg'
         input_image = merged_image
+    elif in_projection == PROJECTION_EQUIRECTANGULAR:
+        in_proj_options['border_padding'] = cubemap_border_padding
+
+        # validate input images
+        if len(in_images) != 1:
+            click.echo(click.style("You need to supply 1 image for the equirectangular projection", fg='red'))
+            return
+
+        input_image_path = in_images[0]
+        input_image = Image.open(input_image_path)
     else:
         raise ValueError("input projection '{}' not fully implemented yet".format(in_projection))
 
