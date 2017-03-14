@@ -43,7 +43,7 @@ $ pip install .
 ## Usage
 
 ```sh
-$ projector --in-projection=cubemap --out-projection=equirectangular --in-images ~/cubemap_+x.jpg ~/cubemap_-x.jpg ~/cubemap_+y.jpg ~/cubemap_-y.jpg ~/cubemap_+z.jpg ~/cubemap_-z.jpg
+$ projector --in-projection=cubemap --out-projection=equirectangular --in-images ~/examples/cubemap_high_res/cubemap_+x.jpg ~/examples/cubemap_high_res/cubemap_-x.jpg ~/examples/cubemap_high_res/cubemap_+y.jpg ~/examples/cubemap_high_res/cubemap_-y.jpg ~/examples/cubemap_high_res/cubemap_+z.jpg ~/examples/cubemap_high_res/cubemap_-z.jpg
 ```
 
 ## Credits
