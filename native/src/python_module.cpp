@@ -93,16 +93,12 @@ namespace libprojector {
     /**
      Cubemap projection associated with the following cubemap layout
      
-      --------
-     |   +z   |
-     |  side  |
-      -------- -------- -------- -------- 
-     |   -y   |   +x   |   +y   |   -x   |
-     |  side  |  side  |  side  |  side  |
-      -------- -------- -------- --------
-     |   -z   |
-     |  side  |
-      --------
+     Input layout
+
+      -------- -------- -------- -------- -------- --------
+     |   +x   |   -x   |   +y   |   -y   |   +z   |   -z   |
+     |  side  |  side  |  side  |  side  |  side  |  side  |
+      -------- -------- -------- -------- -------- --------
 
      */
     class CubemapProjection: public Projection {
@@ -116,11 +112,11 @@ namespace libprojector {
             sideBorderPadding(static_cast<double>(_sideBorderPadding)) {}
 
         int getWidth() const {
-            return static_cast<int>(4 * sideWidth);
+            return static_cast<int>(6 * sideWidth);
         }
 
         int getHeight() const {
-            return static_cast<int>(3 * sideWidth);
+            return static_cast<int>(1 * sideWidth);
         }
 
         void toRay(double u, double v, Ray& ray) const {
@@ -137,40 +133,40 @@ namespace libprojector {
 
             double maxAxis = sqrtf(1.0 / (1.0 + uu*uu + vv*vv));
 
-            // -y
-            if (offsetXIndex == 0 && offsetYIndex == 1) {
-                // uu [-1,1] from -x to +x
-                // vv [-1,1] from +z to -z
-                ray.x = uu * maxAxis;
-                ray.z = -vv * maxAxis;
-                ray.y = -1.0 * maxAxis;
-            }
             // +x
-            if (offsetXIndex == 1 && offsetYIndex == 1) {
+            if (offsetXIndex == 0 && offsetYIndex == 0) {
                 // uu [-1,1] from -y to +y
                 // vv [-1,1] from +z to -z
                 ray.y = uu * maxAxis;
                 ray.z = -vv * maxAxis;
                 ray.x = maxAxis;
             }
-            // +y
-            if (offsetXIndex == 2 && offsetYIndex == 1) {
-                // uu [-1,1] from +x to -x
-                // vv [-1,1] from +z to -z
-                ray.x = -uu * maxAxis;
-                ray.z = -vv * maxAxis;
-                ray.y = maxAxis;
-            }
             // -x
-            if (offsetXIndex == 3 && offsetYIndex == 1) {
+            if (offsetXIndex == 1 && offsetYIndex == 0) {
                 // uu [-1,1] from +y to -y
                 // vv [-1,1] from +z to -z
                 ray.y = -uu * maxAxis;
                 ray.z = -vv * maxAxis;
                 ray.x = -1.0 * maxAxis;
             }
+            // +y
+            if (offsetXIndex == 2 && offsetYIndex == 0) {
+                // uu [-1,1] from +x to -x
+                // vv [-1,1] from +z to -z
+                ray.x = -uu * maxAxis;
+                ray.z = -vv * maxAxis;
+                ray.y = maxAxis;
+            }
+            // -y
+            if (offsetXIndex == 3 && offsetYIndex == 0) {
+                // uu [-1,1] from -x to +x
+                // vv [-1,1] from +z to -z
+                ray.x = uu * maxAxis;
+                ray.z = -vv * maxAxis;
+                ray.y = -1.0 * maxAxis;
+            }
             // +z
-            if (offsetXIndex == 0 && offsetYIndex == 0) {
+            if (offsetXIndex == 4 && offsetYIndex == 0) {
                 // u in [-1,1] from -x to +x
                 // v in [-1,1] from +y to -y
                 ray.x = uu * maxAxis;
@@ -178,7 +174,7 @@ namespace libprojector {
                 ray.z = maxAxis;
             }
             // -z
-            if (offsetXIndex == 0 && offsetYIndex == 2) {
+            if (offsetXIndex == 5 && offsetYIndex == 0) {
                 // u in [-1,1] from -x to +x
                 // v in [-1,1] from -y to +y
                 ray.x = uu * maxAxis;

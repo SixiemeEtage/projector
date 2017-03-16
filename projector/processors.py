@@ -9,16 +9,10 @@ def generate_cubemap(images):
     """
      Compose a cubemap associated with the following cubemap layout
 
-      --------
-     |   +z   |
-     |  side  |
-      -------- -------- -------- --------
-     |   -y   |   +x   |   +y   |   -x   |
-     |  side  |  side  |  side  |  side  |
-      -------- -------- -------- --------
-     |   -z   |
-     |  side  |
-      --------
+      -------- -------- -------- -------- -------- --------
+     |   +x   |   -x   |   +y   |   -y   |   +z   |   -z   |
+     |  side  |  side  |  side  |  side  |  side  |  side  |
+      -------- -------- -------- -------- -------- --------
 
     """
     merged_image = None
@@ -28,27 +22,27 @@ def generate_cubemap(images):
         img = Image.open(img_path)
         if merged_image is None:
             side_size = img.size[0]
-            cubemap_size = (side_size*4, side_size*3)
+            cubemap_size = (side_size*6, side_size*1)
             merged_image = Image.new(img.mode, cubemap_size)
 
         if idx == 0:
             # front side (+x)
-            x_offset, y_offset = (1*side_size, 1*side_size)
+            x_offset, y_offset = (0*side_size, 0*side_size)
         elif idx == 1:
             # back side (-x)
-            x_offset, y_offset = (3*side_size, 1*side_size)
+            x_offset, y_offset = (1*side_size, 0*side_size)
         elif idx == 2:
             # left side (+y)
-            x_offset, y_offset = (2*side_size, 1*side_size)
+            x_offset, y_offset = (2*side_size, 0*side_size)
         elif idx == 3:
             # right side (-y)
-            x_offset, y_offset = (0*side_size, 1*side_size)
+            x_offset, y_offset = (3*side_size, 0*side_size)
         elif idx == 4:
             # top side (+z)
-            x_offset, y_offset = (0, 0)
+            x_offset, y_offset = (4*side_size, 0*side_size)
         elif idx == 5:
             # bottom side (-z)
-            x_offset, y_offset = (0, 2*side_size)
+            x_offset, y_offset = (5*side_size, 0*side_size)
         else:
             raise ValueError("Unknown side index")
 
@@ -61,34 +55,28 @@ def split_cubemap(map_image):
     """
      Cubemap splitting associated with the following cubemap layout
 
-      --------
-     |   +z   |
-     |  side  |
-      -------- -------- -------- --------
-     |   -y   |   +x   |   +y   |   -x   |
-     |  side  |  side  |  side  |  side  |
-      -------- -------- -------- --------
-     |   -z   |
-     |  side  |
-      --------
+      -------- -------- -------- -------- -------- --------
+     |   +x   |   -x   |   +y   |   -y   |   +z   |   -z   |
+     |  side  |  side  |  side  |  side  |  side  |  side  |
+      -------- -------- -------- -------- -------- --------
 
     """
     assert isinstance(map_image, np.ndarray)
     splitted_images = {}
-    assert map_image.shape[1] % 4 == 0
-    side_x_size = int(map_image.shape[1] / 4)
-    assert map_image.shape[0] % 3 == 0
-    side_y_size = int(map_image.shape[0] / 3)
+    if map_image.shape[1] % 6 != 0:
+        raise ValueError("The cubemap layout doesn't seem to be valid, it needs to be 6:1")
+    side_x_size = int(map_image.shape[1] / 6)
+    side_y_size = int(map_image.shape[0])
     if side_x_size != side_y_size:
         raise ValueError("The cubemap doesn't seem to be valid, the face sizes are not equal.")
 
     faces_offsets = {
-        "+z": (0, 0),
-        "-y": (0, 1),
-        "+x": (1, 1),
-        "+y": (2, 1),
-        "-x": (3, 1),
-        "-z": (0, 2),
+        "+x": (0, 0),
+        "-x": (1, 0),
+        "+y": (2, 0),
+        "-y": (3, 0),
+        "+z": (4, 0),
+        "-z": (5, 0),
     }
     for face in faces_offsets:
         offset_indexes = faces_offsets[face]
@@ -112,14 +100,6 @@ class ConvertProjectionProcessor(object):
 
     def run(self, input_proj, output_proj):
         """Generate the preview"""
-        # first we resize the input image
-        # so that the remaping step produce a nice image
-        # TODO implement this optimization
-        # optimal_size = self._input_optimal_size()
-        # if optimal_size != self.image_size:
-        #     resized_image = cv2.resize(self.image, optimal_size)
-        # else:
-        #     resized_image = self.image
         resized_image = self.image
 
         # build the remaping maps
