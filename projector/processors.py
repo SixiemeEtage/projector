@@ -111,5 +111,5 @@ class ConvertProjectionProcessor(object):
         map_x = P.get_map_x()
         map_y = P.get_map_y()
 
-        out = cv2.remap(resized_image, map_x, map_y, cv2.INTER_LANCZOS4, None, cv2.BORDER_WRAP)
+        out = cv2.remap(resized_image, map_x, map_y, cv2.INTER_LINEAR, None, cv2.BORDER_WRAP)
         return out
