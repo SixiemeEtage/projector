@@ -25,7 +25,7 @@ class EquirectangularProj(BaseProj):
 class CubemapProj(BaseProj):
     
     def get_projection(self):
-        side_width = int(self.image_width / 4)
+        side_width = int(self.image_width / 6)
         border_padding = self.options.get('border_padding', 0)
         return libprojector.CubemapProjection(side_width, border_padding)
 
