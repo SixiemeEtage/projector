@@ -207,8 +207,8 @@ namespace libprojector {
                 // u in [0,1] from -y to +y
                 // v in [0,1] from +z to -z
                 maxAxis = absX;
-                offsetXIndex = 1;
-                offsetYIndex = 1;
+                offsetXIndex = 0;
+                offsetYIndex = 0;
                 u = r.y;
                 v = -r.z;
             }
@@ -217,8 +217,8 @@ namespace libprojector {
                 // u in [0,1] from +y to -y
                 // v in [0,1] from -z to +z
                 maxAxis = absX;
-                offsetXIndex = 3;
-                offsetYIndex = 1;
+                offsetXIndex = 1;
+                offsetYIndex = 0;
                 u = -r.y;
                 v = -r.z;
             }
@@ -229,7 +229,7 @@ namespace libprojector {
                 // v in [0,1] from +z to -z
                 maxAxis = absY;
                 offsetXIndex = 2;
-                offsetYIndex = 1;
+                offsetYIndex = 0;
                 u = -r.x;
                 v = -r.z;
             }
@@ -238,8 +238,8 @@ namespace libprojector {
                 // u in [0,1] from -x to +x
                 // v in [0,1] from +z to -z
                 maxAxis = absY;
-                offsetXIndex = 0;
-                offsetYIndex = 1;
+                offsetXIndex = 3;
+                offsetYIndex = 0;
                 u = r.x;
                 v = -r.z;
             }
@@ -249,7 +249,7 @@ namespace libprojector {
                 // u in [0,1] from -x to +x
                 // v in [0,1] from +y to -y
                 maxAxis = absZ;
-                offsetXIndex = 0;
+                offsetXIndex = 4;
                 offsetYIndex = 0;
                 u = r.x;
                 v = -r.y;
@@ -259,8 +259,8 @@ namespace libprojector {
                 // u in [0,1] from -x to +x
                 // v in [0,1] from -y to +y
                 maxAxis = absZ;
-                offsetXIndex = 0;
-                offsetYIndex = 2;
+                offsetXIndex = 5;
+                offsetYIndex = 0;
                 u = r.x;
                 v = r.y;
             }
