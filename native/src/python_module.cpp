@@ -337,7 +337,7 @@ namespace libprojector {
 
         //initialize converters
         to_python_converter<cv::Mat, libprojector::matToNDArrayBoostConverter>();
-        //matFromNDArrayBoostConverter();
+        libprojector::matFromNDArrayBoostConverter();
 
         //expose module-level functions
         class_<SphericalProjection>("SphericalProjection", init<int, int>());
