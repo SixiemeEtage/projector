@@ -23,13 +23,13 @@ $ git clone https://github.com/SixiemeEtage/projector
 $ cd projector
 $ mkdir -p native/build && cd native/build
 $ cmake .. \
--DPYTHON_DESIRED_VERSION=2.X \
--DPYTHON2_EXECUTABLE=$(which python) \
--DPYTHON2_LIBRARY=$(python-config --prefix)/lib/libpython2.7.dylib \
--DPYTHON2_INCLUDE_DIR=$(python-config --prefix)/include/python2.7/ \
--DPYTHON2_NUMPY_INCLUDE_DIRS=/usr/local/Cellar/numpy/1.12.0/lib/python2.7/site-packages/numpy/core/include/ \
--DBOOST_ROOT=/usr/local/Cellar/boost@1.60/1.60.0 \
--DBoost_INCLUDE_DIR=/usr/local/Cellar/boost@1.60/1.60.0/include
+    -DPYTHON_DESIRED_VERSION=2.X \
+    -DPYTHON2_EXECUTABLE=$(which python) \
+    -DPYTHON2_LIBRARY=$(python2-config --prefix)/lib/libpython2.7.dylib \
+    -DPYTHON2_INCLUDE_DIR=$(python2-config --prefix)/include/python2.7/ \
+    -DPYTHON2_NUMPY_INCLUDE_DIRS=/usr/local/Cellar/numpy/1.12.0/lib/python2.7/site-packages/numpy/core/include/ \
+    -DBOOST_ROOT=/usr/local/Cellar/boost@1.60/1.60.0 \
+    -DBoost_INCLUDE_DIR=/usr/local/Cellar/boost@1.60/1.60.0/include
 $ make
 $ make install
 ```

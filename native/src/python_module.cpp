@@ -1,4 +1,4 @@
-#define PY_ARRAY_UNIQUE_SYMBOL pbcvt_ARRAY_API
+#define PY_ARRAY_UNIQUE_SYMBOL libprojector_ARRAY_API
 
 #include <iostream>
 #include <boost/python.hpp>
@@ -336,8 +336,8 @@ namespace libprojector {
         init_ar();
 
         //initialize converters
-        to_python_converter<cv::Mat, pbcvt::matToNDArrayBoostConverter>();
-        pbcvt::matFromNDArrayBoostConverter();
+        to_python_converter<cv::Mat, libprojector::matToNDArrayBoostConverter>();
+        //matFromNDArrayBoostConverter();
 
         //expose module-level functions
         class_<SphericalProjection>("SphericalProjection", init<int, int>());
