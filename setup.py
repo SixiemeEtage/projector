@@ -16,7 +16,7 @@ test_requirements = [
 
 setup(
     name='projector',
-    version='0.1.0',
+    version='0.3.0',
     description="Python cli (backed with C++) to convert 360 images between projection types",
     author="Pierre Dulac",
     author_email='pierre@dulaccc.me',
