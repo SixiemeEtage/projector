@@ -17,8 +17,8 @@ class BaseProj(object):
 class EquirectangularProj(BaseProj):
     
     def get_projection(self):
-        width = self.image_width
-        height = self.image_width / 2
+        width = int(self.image_width)
+        height = int(self.image_width / 2)
         return libprojector.SphericalProjection(width, height)
 
 
